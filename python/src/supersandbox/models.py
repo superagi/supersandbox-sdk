@@ -158,7 +158,7 @@ class UpdateEnvResponse(BaseModel):
 
 class Task(BaseModel):
     model_config = _ALIASES
-    id: str
+    id: str = Field(..., alias="taskId")
     status: str
     exit_code: Optional[int] = Field(None, alias="exitCode")
     started_at: Optional[datetime] = Field(None, alias="startedAt")
