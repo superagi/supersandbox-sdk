@@ -18,3 +18,4 @@ env/
 *.so
 node_modules/
 .DS_Store
+typescript/node_modules/\ntypescript/dist/
