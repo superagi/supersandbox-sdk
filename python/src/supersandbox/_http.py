@@ -41,6 +41,14 @@ class AsyncHTTPClient:
             timeout=timeout,
         )
 
+    def _decode(self, resp: httpx.Response) -> Any:
+        if not resp.content:
+            return None
+        ct = resp.headers.get("content-type", "")
+        if "json" in ct:
+            return resp.json()
+        return resp.text
+
     async def request(
         self,
         method: str,
@@ -51,9 +59,9 @@ class AsyncHTTPClient:
     ) -> Any:
         resp = await self._client.request(method, path, json=json, params=params)
         _raise_for(resp)
-        if resp.status_code == 204 or not resp.content:
+        if resp.status_code == 204:
             return None
-        return resp.json()
+        return self._decode(resp)
 
     async def request_with_headers(
         self,
@@ -65,8 +73,7 @@ class AsyncHTTPClient:
     ) -> Tuple[Any, Dict[str, str]]:
         resp = await self._client.request(method, path, json=json, params=params)
         _raise_for(resp)
-        body = resp.json() if resp.content else None
-        return body, dict(resp.headers)
+        return self._decode(resp), dict(resp.headers)
 
     async def get(self, path: str, *, params: Optional[Dict[str, Any]] = None) -> Any:
         return await self.request("GET", path, params=params)
