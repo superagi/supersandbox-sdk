@@ -1,0 +1,26 @@
+{
+  "name": "SuperSandbox SDK",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bullseye",
+  "postCreateCommand": "pip install -e './python[dev]'",
+  "remoteEnv": {
+    "SUPERSANDBOX_API_KEY": "${localEnv:SUPERSANDBOX_API_KEY}",
+    "SUPERSANDBOX_BASE_URL": "${localEnv:SUPERSANDBOX_BASE_URL}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.mypy-type-checker",
+        "charliermarsh.ruff",
+        "golang.go"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "editor.formatOnSave": true,
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        }
+      }
+    }
+  }
+}
