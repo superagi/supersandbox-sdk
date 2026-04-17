@@ -10,9 +10,7 @@ const defaultBaseURL = "https://sandbox.superagii.com"
 
 // Client is the SuperSandbox API client.
 type Client struct {
-	apiKey     string
-	baseURL    string
-	httpClient *http.Client
+	http *httpClient
 }
 
 // ClientOption configures a Client.
@@ -20,21 +18,28 @@ type ClientOption func(*Client)
 
 // WithBaseURL overrides the default API base URL.
 func WithBaseURL(url string) ClientOption {
-	return func(c *Client) { c.baseURL = url }
+	return func(c *Client) { c.http.baseURL = url }
 }
 
 // WithTimeout sets the HTTP client timeout.
 func WithTimeout(d time.Duration) ClientOption {
-	return func(c *Client) { c.httpClient.Timeout = d }
+	return func(c *Client) { c.http.httpClient.Timeout = d }
+}
+
+// WithHTTPClient replaces the underlying http.Client entirely.
+func WithHTTPClient(hc *http.Client) ClientOption {
+	return func(c *Client) { c.http.httpClient = hc }
 }
 
 // New creates a new SuperSandbox Client.
 func New(apiKey string, opts ...ClientOption) *Client {
 	c := &Client{
-		apiKey:  apiKey,
-		baseURL: defaultBaseURL,
-		httpClient: &http.Client{
-			Timeout: 60 * time.Second,
+		http: &httpClient{
+			apiKey:  apiKey,
+			baseURL: defaultBaseURL,
+			httpClient: &http.Client{
+				Timeout: 60 * time.Second,
+			},
 		},
 	}
 	for _, o := range opts {
