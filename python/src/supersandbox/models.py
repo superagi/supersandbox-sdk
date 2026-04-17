@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Dict, List, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 _ALIASES = ConfigDict(populate_by_name=True)
 
@@ -158,8 +158,8 @@ class UpdateEnvResponse(BaseModel):
 
 class Task(BaseModel):
     model_config = _ALIASES
-    id: str = Field(..., alias="taskId")
-    status: str
+    id: str = Field(..., validation_alias=AliasChoices("id", "taskId"))
+    status: Optional[str] = None
     exit_code: Optional[int] = Field(None, alias="exitCode")
     started_at: Optional[datetime] = Field(None, alias="startedAt")
     finished_at: Optional[datetime] = Field(None, alias="finishedAt")
