@@ -1,0 +1,41 @@
+name: TypeScript SDK
+
+on:
+  push:
+    paths:
+      - "typescript/**"
+      - ".github/workflows/typescript-ci.yml"
+  pull_request:
+    paths:
+      - "typescript/**"
+      - ".github/workflows/typescript-ci.yml"
+
+jobs:
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["18", "20", "22"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: typescript/package-lock.json
+
+      - name: Install
+        run: cd typescript && npm ci
+
+      - name: Type check
+        run: cd typescript && npm run typecheck
+
+      - name: Build
+        run: cd typescript && npm run build
+
+      - name: Test
+        run: cd typescript && npm test

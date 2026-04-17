@@ -1,0 +1,14 @@
+{
+  "name": "supersandbox-ts-quickstart",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx quickstart.ts"
+  },
+  "dependencies": {
+    "supersandbox": "../../typescript"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4"
+  }
+}
