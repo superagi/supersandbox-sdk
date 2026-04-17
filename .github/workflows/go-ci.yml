@@ -15,8 +15,9 @@ jobs:
     name: Test (Go ${{ matrix.go-version }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        go-version: ["1.21", "1.22"]
+        go-version: ["1.21", "1.22", "1.23"]
 
     steps:
       - uses: actions/checkout@v4
@@ -26,10 +27,14 @@ jobs:
           go-version: ${{ matrix.go-version }}
           cache-dependency-path: go/go.sum
 
+      - name: Download modules
+        run: cd go && go mod download
+
       - name: Build
-        run: go build ./...
-        working-directory: go
+        run: cd go && go build ./...
+
+      - name: Vet
+        run: cd go && go vet ./...
 
       - name: Test
-        run: go test ./... -v
-        working-directory: go
+        run: cd go && go test ./... -v -count=1
